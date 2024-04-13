@@ -131,7 +131,6 @@ def assemblePayloads(I: dict) -> [dict]:
     }
     return config
 
-
 def punish(config: dict):
     """punish takes a configuration dictionary and sends payloads to a target site,
     hopefully causing a scammer somewhere to lose resources, time, or their mind.
