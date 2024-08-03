@@ -8,17 +8,22 @@ import json
 import csv
 import time
 
-# Go to https://www.fakenamegenerator.com/order.php and download a CSV file of identities.
+# Go to https://www.fakenamegenerator.com/order.php and download a CSV file of identities. 
 # You might as well get the maximum quantity, which is 100,000 (as of 13/04/24).
 # Include ALL fields, and make sure to choose an appropriate name set and country.
 # Extract the CSV file and put it in the same directory as this script, and change the filename below.
 datafile = "FakeNameGenerator.com_da48c5a0.csv"
 
+PASSWORDS_FILE = 'pwds.json'
+EMAIL_SUFFIXES_FILE = 'email_suffixes.json'
+USER_AGENTS_FILE = 'uas.json'
+COUNTIES_FILE = 'counties.json'
+
 def associateFields(filename: str) -> dict:
     """associateFields reads the first row of a csv file and returns a dictionary associating each field with its index."""
     first_row = []
-    with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=",")
+    with open(filename) as csv_file:
+        reader = csv.reader(csv_file, delimiter=",")
         for row in reader:
             first_row = row
             break
@@ -31,32 +36,37 @@ def parseFakeNameGen(filename: str) -> dict:
     """parseFakeNameGen is a generator that reads a csv file from FakeNameGenerator.com and returns a dictionary of the fields in the next row."""
     fields = associateFields(filename)
     print(fields)
-    with open(filename) as csvfile:
-        reader = csv.reader(csvfile, delimiter=",")
+    with open(filename) as csv_file:
+        reader = csv.reader(csv_file, delimiter=",")
         for row in reader:
             identity = {}
             for f in dict.keys(fields):
                 identity[f] = row[fields[f]]
             yield identity
 
-passwords = json.loads(open('pwds.json').read())
+passwords = json.loads(open(PASSWORDS_FILE).read())
 def randomPassword() -> str:
     """randomPassword generates a random password.."""
     passwd = random.choice(passwords)
-    randsym = random.choice(["!","%","$","&","£","!","!","#","-","*","","","","","","","","",""])
-    randnum = random.choice([random.randint(0,9),""])
-    passwd = passwd.capitalize()+str(randnum)
-    passwd = random.choice([passwd, passwd+randsym])
+    random_symbol = random.choice(["!","%","$","&","£","!","!","#","-","*","","","","","","","","",""])
+    random_number = random.choice([random.randint(0,9),""])
+    passwd = passwd.capitalize()+str(random_number)
+    passwd = random.choice([passwd, passwd+random_symbol])
     return passwd
 
-user_agents = json.loads(open('uas.json').read())
+email_suffixes = json.loads(open(EMAIL_SUFFIXES_FILE).read())
+def random_email_suffix() -> str:
+    """random_email_suffix generates a random email suffix (i.e. '@xxxx.tld')"""
+    return random.choice(email_suffixes)
+
+user_agents = json.loads(open(USER_AGENTS_FILE).read())
 def fakeClient() -> {"ip":str, "headers":dict, "screen":str}:
-    randip = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
+    random_ip = ".".join(map(str, (random.randint(0, 255) for _ in range(4))))
     headers = {"User-Agent":random.choice(user_agents)}
     screen = random.choice(['414+x+736', '375+x+812','375+x+667'])
-    return {"ip":randip, "headers":headers, "screen":screen}
+    return {"ip":random_ip, "headers":headers, "screen":screen}
 
-counties = json.loads(open('counties.json').read())
+counties = json.loads(open(COUNTIES_FILE).read())
 def randomCounty() -> str:
     return random.choice(counties)
 
@@ -70,6 +80,7 @@ def logo():
     ╚═╝░░╚═╝╚═╝░░╚═══╝╚═╝╚═╝░░░░░╚══════╝╚═╝░░░░░╚═╝░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░""")
 
 def randomEmail(I: dict) -> str:
+
     eml_prefix = random.choice(
             [I["Username"],
             I["GivenName"]+"."+I["Surname"],
@@ -79,8 +90,7 @@ def randomEmail(I: dict) -> str:
             I["GivenName"]+I["Surname"]+I["Birthday"][-2:-1],
             I["EmailAddress"]
         ])
-    eml_suffix = random.choice(["yahoo.com", "btinternet.co.uk","gmail.com","icloud.com","outlook.com","hotmail.com","hotmail.co.uk","yahoo.co.uk","aol.com","gmail.com"])
-    email = eml_prefix if "@" in eml_prefix else eml_prefix+"@"+eml_suffix
+    email = eml_prefix if "@" in eml_prefix else eml_prefix+"@"+random_email_suffix()
     return email
 
 def getCard(I: dict) -> {"number":str, "expiry": {"month":str, "year":str, "mm":str, "yy":str, "mm/yy":str}, "cvv":str, "name":str}:
@@ -147,7 +157,7 @@ def punish(config: dict):
                 j += 1
             print("Completed", i, "identities")
     except Exception as e:
-        print("An Exception Occured. Maybe they're dead.")
+        print("An Exception Occurred. Maybe they're dead.")
         print(e)
         time.sleep(10)
 
