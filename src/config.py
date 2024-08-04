@@ -1,0 +1,6 @@
+FAKE_NAME_GENERATOR_DATA = 'FakeNameGenerator.com_da48c5a0.csv'
+FAKE_DATA_DIR = 'fake_data'
+PASSWORDS_FILE = 'passwords.json'
+EMAIL_SUFFIXES_FILE = 'email_suffixes.json'
+USER_AGENTS_FILE = 'user_agents.json'
+COUNTIES_FILE = 'counties.json'
