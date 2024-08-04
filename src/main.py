@@ -6,7 +6,7 @@ import requests
 import time
 from typing import Dict, List
 
-from config import FAKE_NAME_GENERATOR_DATA
+from config import FAKE_NAME_GENERATOR_DATA, FAKE_DATA_DIR
 from fake_data import *
 from utils import parse_fake_identities, logo
 
@@ -101,11 +101,14 @@ def main():
     parser.add_argument("-p", "--parallel", action="store_true", help="Run in parallel mode.")
     args = parser.parse_args()
 
+    fake_identities_file = FAKE_DATA_DIR + "/" + FAKE_NAME_GENERATOR_DATA
+    fake_identities = parse_fake_identities(fake_identities_file)
+
     if args.parallel:
         with mp.Pool(mp.cpu_count()) as pool:
-            pool.map(punish, [assemble_payloads(identity) for identity in parse_fake_identities(FAKE_NAME_GENERATOR_DATA)])
+            pool.map(punish, (assemble_payloads(identity) for identity in fake_identities))
     else:
-        for identity in parse_fake_identities(FAKE_NAME_GENERATOR_DATA):
+        for identity in fake_identities:
             payloads = assemble_payloads(identity)
             punish(payloads)
 
