@@ -15,8 +15,16 @@ This means even more money lost for them, as they had to put the work in to send
 
 `knifeFight.py` is a script which sends a boatload of fake data to scammers, filling up their database with garbage so it's a pain in the ass for them and may discourage them in the future (I hope).
 
-So far you have to begin by manually doing the scam link, trackng the POST requests you send to them with browser dev tools (using the network tab - the pattern I noticed is it's always a few POST request).
+So far you have to begin by manually doing the scam link, tracking the POST requests you send to them with browser dev tools (using the network tab - the pattern I noticed is it's always a few POST request).
 Then copy the post request data and urls into `knifeFight.py` and use it to spam with fake data to your heart's content
+
+## Usage
+
+1. Create a bulk order on [Fake Name Generator](https://www.fakenamegenerator.com/order.php), be sure to grab as many fields as you can.
+2. Alter `FAKE_NAME_GENERATOR_DATA` to point at your CSV data file.
+3. Go to your target site and analyse what payloads (POST requests) for each step in the web form. Use the results to create fake payloads within `assemble_payloads`.
+4. Let 'er rip.
+
 
 ## Kill Count
 
@@ -46,6 +54,6 @@ Currently this is kind of garbage and requires some hacking to get it working fo
 Don't blast every single text - one time they tried to binary search for me after I did six in a row, and I just stopped. They sent approx 12 scam texts in an hour timespan.
 
 [^1]: 'Stop Knife Crime' is a 'cause' which is run by Inside Success UK, a sinister, predatory organisation which is known for [harassing and intimidating the public to force them into making donations.](https://docere.uk/articles/the-london-knife-crime-activists)
-I turn the gun on them whenever our paths unfortuantely cross. Call them out. Spend 15 minutes of your day making sure someone doesn't get ripped off, we all deserve someone to stand up for us.
+I turn the gun on them whenever our paths unfortunately cross. Call them out. Spend 15 minutes of your day making sure someone doesn't get ripped off, we all deserve someone to stand up for us.
 I'm writing a blog post about this soon, with some of my investigative work.
 
